@@ -1,0 +1,7 @@
+requests==2.12.4
+redis==2.10.5
+Fabric==1.13.2
+numpy==1.12.1
+falcon==1.2.0
+ujson==1.35
+pandas==0.20.2
