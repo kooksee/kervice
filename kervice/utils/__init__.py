@@ -27,3 +27,32 @@ def when(func, arg1, arg2):
                 return arg2
 
         return _t
+
+
+def pp(*_func):
+    def __func(*args, **kwargs):
+        _v = "_+_test102"
+        for _f in _func:
+            if _v == '_+_test102':
+                _v = _f(*args, **kwargs)
+            else:
+                _v = _f(_v)
+        return _v
+
+    return __func
+
+
+def h(x):
+    print(x)
+    return x
+
+
+if __name__ == '__main__':
+    pp(
+        h,
+        h,
+        h
+    )(
+        "kk"
+    )
+    pass

@@ -2,8 +2,8 @@ import ujson as json
 
 import paco
 
-from utils import run_async
-from utils.http_util import request_post
+from kervice.utils.app import Application
+from kervice.utils.http_util import request_post
 
 
 def dingding_msg(data):
@@ -43,11 +43,6 @@ async def _dingding_post(data):
         print(data)
         print({"error": res})
 
-
-def dingding_post(data):
-    run_async(_dingding_post(data))
-
-
 def notice_add_handle(data):
     print(data)
     return "ok"
@@ -55,7 +50,6 @@ def notice_add_handle(data):
 
 @paco.interval(0.2)
 async def _notify_start_handle():
-    from utils.app import Application
     app = Application.current()
 
     r = app.redis
@@ -80,7 +74,6 @@ async def _notify_start_handle():
 
 
 async def notify_start_handle():
-    from utils.app import Application
     app = Application.current()
 
     async def _f():
@@ -91,7 +84,6 @@ async def notify_start_handle():
 
 
 def notify_stop_handle():
-    from utils.app import Application
     app = Application.current()
 
     try:

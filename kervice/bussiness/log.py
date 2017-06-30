@@ -1,4 +1,4 @@
-from utils import run_async
+from kervice.utils.app import Application
 
 
 async def __log_post(data):
@@ -15,13 +15,8 @@ async def __log_post(data):
     name = data.get("name", "test")
     cnt = data.get("cnt", {})
 
-    from utils.app import Application
     app = Application.current()
 
     st, col = app.mongo.col(name)
     result = await col.insert_one(cnt)
     print('result %s' % repr(result.inserted_id))
-
-
-def log_post(data):
-    run_async(__log_post(data))

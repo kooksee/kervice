@@ -26,7 +26,7 @@ class RedisManager(object):
 
 
 def init_redis():
-    from utils.app import Application
+    from kervice.utils.app import Application
     app = Application.current()
     app.redis = RedisManager(config=app.config.REDIS)
 

@@ -1,7 +1,8 @@
-# -*- coding: utf-8 -*-
+from kervice.app.const import Env
+from kervice.utils.app import Application
+
+
 class Config:
-    NAME = "scores"
-    DEBUG = True
     SECRET_KEY = '123456@#$%^&*('
 
 
@@ -42,10 +43,7 @@ class ProConfig(Config):
 
 
 def init_config():
-    from utils.app import Application
     app = Application.current()
-
-    from scores.const import Env
 
     _e = app.env
     if _e == Env.local:
@@ -60,5 +58,3 @@ def init_config():
         _f = LocalConfig()
 
     app.config = _f
-    app.debug = _f.DEBUG
-    app.name = _f.NAME
