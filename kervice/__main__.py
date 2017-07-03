@@ -1,11 +1,7 @@
-import asyncio
 import sys
 from os.path import abspath as ap, dirname as dn
 
 sys.path.append(dn(dn(ap(__file__))))
-
-from kervice.utils import pp
-from kervice.utils.colors import yellow
 
 import click
 
@@ -19,22 +15,29 @@ click.disable_unicode_literals_warning = True
 def main(env, port, name):
     """启动服务"""
 
+    from kervice.utils import pp
+    from kervice.utils.colors import red
+    from kervice.utils.net_tool import get_open_port
+    from kervice.utils import when
     from kervice.utils.app import Application
+
+    import asyncio
+    import uvloop
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
     app = Application.instance()
     app.env = env
 
-    from kervice.utils.net_tool import get_open_port
-    from kervice.utils import when
-
     app.port = when(port == 80, get_open_port(), port)
-    if name == "test":
-        pp(yellow,print)("service name: test is default")
+
+    pp("warning:\n  service name is default: {}".format(name)).then(red).then(print)
     app.name = name
     app.debug = when(env == 'pro', False, True)
 
+    pp("info:\n  url: http://localhost:{}".format(app.port)).then(red).then(print)
+    asyncio.ensure_future(app.create_server(host="0.0.0.0", port=app.port, debug=app.debug))
     from kervice.app.main import init_app
     asyncio.ensure_future(init_app())
-    asyncio.ensure_future(app.create_server(host="0.0.0.0", port=app.port, debug=app.debug))
     asyncio.get_event_loop().run_forever()
 
 
