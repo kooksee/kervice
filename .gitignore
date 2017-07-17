@@ -101,5 +101,4 @@ ENV/
 .mypy_cache/
 .idea
 fabfile.py
-access.log
-error.log
+tt

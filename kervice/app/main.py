@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 import asyncio
 import sys
-from uuid import uuid4
-
 import time
+import ujson as json
+from uuid import uuid4
 
 from kervice.utils import pp
 from kervice.utils.app import Application
-from kervice.utils.colors import yellow
+from kervice.utils.colors import yellow, red
 from kervice.utils.net_tool import get_host_ip
 
 
 async def close_service(sig, stack_frame):
-    # pp('catched singal: {},{}'.format(sig, stack_frame)).then(red).then(print)
+    pp('catched singal: {},{}'.format(sig, stack_frame)).then(red).then(print)
 
     app = Application.current()
 

@@ -33,6 +33,10 @@ def when(func, arg1, arg2):
 
 
 class pp(object):
+    """
+    pipeline
+
+    """
     def __init__(self, data):
         if not data:
             print(yellow("data is {}".format(str(data))))
