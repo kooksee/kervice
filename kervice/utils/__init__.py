@@ -1,4 +1,6 @@
-from kervice.utils.colors import yellow
+from asyncio import iscoroutine
+
+from kervice.utils.colors import yellow, red
 
 
 def when(func, arg1, arg2):
@@ -32,31 +34,15 @@ def when(func, arg1, arg2):
         return _t
 
 
-class pp(object):
-    """
-    pipeline
+def pp(data, *func):
+    if not data:
+        print(yellow("data is {}".format(str(data))))
 
-    """
-    def __init__(self, data):
-        if not data:
-            print(yellow("data is {}".format(str(data))))
-        self._d = data
+    async def __pp(data, *func):
+        for f in func:
+            if not iscoroutine(f):
+                data = f(data)
+            else:
+                data = await f(data)
 
-    def then(self, func):
-        if not self._d:
-            print(yellow("data is {}".format(str(self._d))))
-        self._d = func(self._d)
-        return self
-
-    def result(self):
-        return self._d
-
-
-def h(x):
-    print(x)
-    return x
-
-
-if __name__ == '__main__':
-    pp("kk").then(h).then(h).then(print)
-    pass
+    return __pp(data, *func)

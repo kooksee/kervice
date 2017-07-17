@@ -41,12 +41,11 @@ def run_app(env="local", port="8100"):
     fab run_app:"log='debug',env='dev',port=8100"
     fab run_app:log='debug',env='dev',port=8100
     """
+    import os
 
-    local(
-        """
-        python kervice -e {env} -p {port}
-        """.format(env=env, port=port)
-    )
+    _cmd = """python kervice -e {env} -p {port}""".format(env=env, port=port)
+    os.system("ps -ef | grep -v grep | grep kervice")
+    local(_cmd)
 
 
 def _clone(p_name='kervice'):

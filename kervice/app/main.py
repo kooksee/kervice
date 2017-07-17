@@ -12,7 +12,7 @@ from kervice.utils.net_tool import get_host_ip
 
 
 async def close_service(sig, stack_frame):
-    pp('catched singal: {},{}'.format(sig, stack_frame)).then(red).then(print)
+    await pp('catched singal: {},{}'.format(sig, stack_frame), red, print)
 
     app = Application.current()
 
@@ -20,7 +20,7 @@ async def close_service(sig, stack_frame):
     st, _res = await app.redis.execute("srem", "{}.url".format(app.name), app.url)
     if not st:
         print(_res)
-    pp("warning:\n  删除服务{} ok".format(app.url)).then(yellow).then(print)
+    await pp("warning:\n  删除服务{} ok".format(app.url), yellow, print)
 
     sys.exit(0)
 
@@ -29,7 +29,7 @@ event = asyncio.Event()
 
 
 async def h():
-    pp("info:\n  启动消费者 ok").then(yellow).then(print)
+    pp("info:\n  启动服务 ok").then(yellow).then(print)
     app = Application.current()
     while True:
         await event.wait()
@@ -42,14 +42,14 @@ async def h():
 
         if not d:
             print('队列为空 {}'.format(time.time()))
-            await event.clear()
+            event.set()
             continue
 
         d = json.loads(d)
 
 
 async def service_check():
-    pp("info:\n  启动服务检测 ok").then(yellow).then(print)
+    await pp("info:\n  服务状态检测 ok", yellow, print)
     app = Application.current()
     while True:
         try:
@@ -79,7 +79,8 @@ async def init_app():
     app.url = "{}:{}".format(get_host_ip(), app.port)
     st, _ = await app.redis.execute("sadd", "{}.url".format(app.name), app.url)
     assert st != 0
-    pp("info:\n  注册服务{} ok".format(app.url)).then(yellow).then(print)
+
+    await pp("info:\n  注册服务{} ok".format(app.url), yellow, print)
 
     # 检查服务状态，检查配置更改，检查队列
     asyncio.run_coroutine_threadsafe(service_check(), asyncio.get_event_loop())

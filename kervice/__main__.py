@@ -1,3 +1,4 @@
+from asyncio import ensure_future, get_event_loop
 import sys
 from os.path import abspath as ap, dirname as dn
 
@@ -6,6 +7,7 @@ sys.path.append(dn(dn(ap(__file__))))
 import click
 
 click.disable_unicode_literals_warning = True
+
 
 
 @click.command()
@@ -30,15 +32,15 @@ def main(env, port, name):
 
     app.port = when(port == 80, get_open_port(), port)
 
-    pp("warning:\n  service name is default: {}".format(name)).then(red).then(print)
+    ensure_future(pp("warning:\n  service name is default: {}".format(name), red, print))
     app.name = name
     app.debug = when(env == 'pro', False, True)
 
-    pp("info:\n  url: http://localhost:{}".format(app.port)).then(red).then(print)
-    asyncio.ensure_future(app.create_server(host="0.0.0.0", port=app.port, debug=app.debug))
+    ensure_future(pp("info:\n  url: http://localhost:{}".format(app.port), red, print))
+    ensure_future(app.create_server(host="0.0.0.0", port=app.port, debug=app.debug))
     from kervice.app.main import init_app
-    asyncio.ensure_future(init_app())
-    asyncio.get_event_loop().run_forever()
+    ensure_future(init_app())
+    get_event_loop().run_forever()
 
 
 if __name__ == "__main__":

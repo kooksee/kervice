@@ -1,9 +1,13 @@
+from os.path import abspath as ap, dirname as dn
+
 from kervice.app.const import Env
+from kervice.utils import pp
 from kervice.utils.app import Application
 
 
-class Config:
+class Config(object):
     SECRET_KEY = '123456@#$%^&*('
+    ROOT_PATH = dn(dn(dn(ap(__file__))))
 
 
 class LocalConfig(Config):
@@ -58,3 +62,8 @@ def init_config():
         _f = LocalConfig()
 
     app.config = _f
+
+
+if __name__ == '__main__':
+    print(pp(__file__, ap, dn, dn, dn))
+    pass
