@@ -35,31 +35,27 @@ def local_init():
     local("pip install click")
 
 
-def run_local(log="debug", env="local", port="8100"):
+def run_app(env="local", port="8100"):
     """
     运行本地项目
-    fab run_local:"log='debug',env='dev',port=8100"
-    gunicorn --workers=4 --bind="0.0.0.0:8010" --log-level="debug" -e "app_env=local" --worker-class="egg:meinheld#gunicorn_worker" wacai.main:app
+    fab run_app:"log='debug',env='dev',port=8100"
+    fab run_app:log='debug',env='dev',port=8100
     """
 
     local(
         """
-        gunicorn --workers=4 \
-        --bind="0.0.0.0:{port}" \
-        --log-level="{log}" \
-        -e "app_env={env}" \
-        --worker-class="egg:meinheld#gunicorn_worker" scores.main:app
-        """.format(port=port, log=log, env=env)
+        python kervice -e {env} -p {port}
+        """.format(env=env, port=port)
     )
 
 
-def _clone(p_name='scores'):
+def _clone(p_name='kervice'):
     run("rm -rf /home/centos/projects/{}".format(p_name))
     with cd("/home/centos/projects"):
         run('git clone http://barry:12345678@192.168.200.19/math_model/{}.git --depth=1'.format(p_name))
 
 
-def _restart(p_name='scores'):
+def _restart(p_name='kervice'):
     run("curl -XPOST http://localhost:11313/api/programs/{}/stop".format(p_name))
     run("curl -XPOST http://localhost:11313/api/programs/{}/start".format(p_name))
     run("curl http://localhost:11313/api/programs/{}".format(p_name))
