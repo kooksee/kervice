@@ -28,6 +28,13 @@ env.pty = False
 env.parallel = True
 
 
+def local_init():
+    """初始化本地依赖工具"""
+    local("pip install pipreqs")
+    local("pip install ujson")
+    local("pip install click")
+
+
 def run_local(log="debug", env="local", port="8100"):
     """
     运行本地项目
