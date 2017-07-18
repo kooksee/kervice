@@ -8,18 +8,15 @@ from kervice.utils.sh_util import cmd
 
 env.roledefs = {
     'local': ["barry@127.0.0.1"],
-    'dev': ['centos@192.168.202.215'],
-    'uat': ['centos@172.16.8.125'],
+    'dev': ['centos@192.168.202.1'],
+    'uat': ['centos@172.16.8.2'],
     "pro": [
-        "centos@172.16.10.144:22",
-        "centos@172.16.10.145:22",
+        "centos@172.16.10.1:22",
+        "centos@172.16.10.2:22",
     ]
 }
 env.passwords = {
-    'centos@172.16.8.125:22': "centosshanghai2015",
-    'centos@192.168.202.215:22': "centosoffice2015",
-    "centos@172.16.10.144:22": "centoswuxi2015",
-    "centos@172.16.10.145:22": "centoswuxi2015",
+    "centos@172.16.0.0:22": "123456",
 
 }
 
@@ -40,7 +37,6 @@ def local_init():
     local("pip install AoikLiveReload")
 
 
-
 def run_app(env="local", port="8100"):
     """
     运行本地项目
@@ -51,7 +47,6 @@ def run_app(env="local", port="8100"):
     cmd("ps -ef | grep -v grep | grep kervice")
     _cmd = """python kervice -e {env} -p {port}""".format(env=env, port=port)
     local(_cmd)
-
 
 
 def _clone(p_name='kervice'):
