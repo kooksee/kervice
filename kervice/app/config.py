@@ -61,7 +61,7 @@ def init_config():
     else:
         _f = LocalConfig()
 
-    app.config = _f
+    app.config.from_object(_f)
 
 
 if __name__ == '__main__':

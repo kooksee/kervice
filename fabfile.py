@@ -4,6 +4,8 @@ from fabric.decorators import roles
 from fabric.operations import local, run
 from fabric.state import env
 
+from kervice.utils.sh_util import cmd
+
 env.roledefs = {
     'local': ["barry@127.0.0.1"],
     'dev': ['centos@192.168.202.215'],
@@ -41,11 +43,11 @@ def run_app(env="local", port="8100"):
     fab run_app:"log='debug',env='dev',port=8100"
     fab run_app:log='debug',env='dev',port=8100
     """
-    import os
 
+    cmd("ps -ef | grep -v grep | grep kervice")
     _cmd = """python kervice -e {env} -p {port}""".format(env=env, port=port)
-    os.system("ps -ef | grep -v grep | grep kervice")
     local(_cmd)
+
 
 
 def _clone(p_name='kervice'):

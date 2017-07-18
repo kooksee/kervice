@@ -4,6 +4,8 @@ import threading
 
 from sanic import Sanic
 
+from kervice.utils import yellow
+
 
 class Application(Sanic):
     # Global lock for creating global Application instance
@@ -93,6 +95,19 @@ class Application(Sanic):
            will automatically become current.
         """
         Application._current.instance = self
+
+    def get_cfg(self, cfg_name):
+        if hasattr(self, cfg_name):
+            return getattr(self, cfg_name)
+
+        if hasattr(self, "config"):
+            return getattr(self.config, cfg_name)
+
+        if hasattr(self, 'cfg'):
+            return getattr(self.cfg, cfg_name)
+
+        print(yellow("{} 不存在".format(cfg_name)))
+        return None
 
     @staticmethod
     def clear_current():

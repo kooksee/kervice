@@ -1,3 +1,4 @@
+import os
 from asyncio import iscoroutine
 
 from kervice.utils.colors import yellow, red
@@ -46,3 +47,24 @@ def pp(data, *func):
                 data = await f(data)
 
     return __pp(data, *func)
+
+
+def init_pid_name(name):
+    _pid = str(os.getpid())
+    _pid_name = "{}.pid".format(_pid)
+
+    _path = os.path.join(os.getenv("HOME"), ".services/{}".format(name))
+    if not os.path.exists(_path):
+        os.makedirs(_path)
+
+    assert not os.path.exists(os.path.join(_path, _pid_name))
+    with open(os.path.join(_path, _pid_name), 'w') as f:
+        f.write(_pid)
+    return name
+
+
+def rm_pid_name(name):
+    _path = os.path.join(os.getenv("HOME"), ".services/{}".format(name))
+    _pid_path=os.path.join(_path, "{}.pid".format(str(os.getpid())))
+    print(_pid_path)
+    os.remove(_pid_path)
