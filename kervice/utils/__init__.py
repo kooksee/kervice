@@ -49,25 +49,30 @@ def pp(data, *func):
     return __pp(data, *func)
 
 
-def init_pid_name(name):
+def init_pid_name():
     _pid = str(os.getpid())
     _pid_name = "{}.pid".format(_pid)
+    from kervice.utils.app import Application
+    app = Application.current()
 
-    _path = os.path.join(os.getenv("HOME"), ".services/{}".format(name))
+    _path = os.path.join(os.getenv("HOME"), ".services/{}".format(app.name))
     if not os.path.exists(_path):
         os.makedirs(_path)
 
-    assert not os.path.exists(os.path.join(_path, _pid_name))
+    if app.debug:
+        assert not os.path.exists(os.path.join(_path, _pid_name))
     with open(os.path.join(_path, _pid_name), 'w') as f:
         f.write(_pid)
-    return name
 
 
-def rm_pid_name(name):
-    _path = os.path.join(os.getenv("HOME"), ".services/{}".format(name))
+def rm_pid_name():
+    from kervice.utils.app import Application
+    app = Application.current()
+
+    _path = os.path.join(os.getenv("HOME"), ".services/{}".format(app.name))
     _pid_path = os.path.join(_path, "{}.pid".format(str(os.getpid())))
     os.remove(_pid_path)
     if not os.path.exists(_pid_path):
-        print(yellow("删除进程文件成功", _pid_path))
+        print(yellow("进程文件删除成功", _pid_path))
     else:
-        print(red("删除进程文件失败", _pid_path))
+        print(red("进程文件删除失败", _pid_path))

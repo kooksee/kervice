@@ -17,4 +17,7 @@ pip install fabric3
 pipreqs 用于生成 requirements.txt 文件
 ujson python中最好的json解析模块
 click Python命令行神器
+sanic web框架
+Sanic-Cors k跨域处理
+AoikLiveReload 热加载
 ```

@@ -1,9 +1,8 @@
 import sys
 from asyncio import ensure_future, get_event_loop
 from os.path import abspath as ap, dirname as dn
-sys.path.append(dn(dn(ap(__file__))))
 
-from kervice.utils import init_pid_name
+sys.path.append(dn(dn(ap(__file__))))
 
 import click
 
@@ -35,9 +34,14 @@ def main(env, port, name):
     if name == 'test':
         ensure_future(pp("warning:\n  service name is default: {}".format(name), red, print))
 
-    app.name = init_pid_name(name)
+    app.name = name
 
     app.debug = when(env == 'pro', False, True)
+
+    if app.debug:
+        from aoiklivereload.aoiklivereload import LiveReloader
+        reloader = LiveReloader()
+        reloader.start_watcher_thread()
 
     ensure_future(pp("info:\n  url: http://localhost:{}".format(app.port), red, print))
     ensure_future(app.create_server(host="0.0.0.0", port=app.port, debug=app.debug))

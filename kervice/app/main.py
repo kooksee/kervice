@@ -5,7 +5,7 @@ import time
 import ujson as json
 from uuid import uuid4
 
-from kervice.utils import pp, rm_pid_name
+from kervice.utils import pp, rm_pid_name, init_pid_name
 from kervice.utils.app import Application
 from kervice.utils.colors import yellow, red
 from kervice.utils.net_tool import get_host_ip
@@ -22,7 +22,9 @@ async def close_service(sig, stack_frame):
         print(_res)
     await pp("warning:\n  删除服务{} ok".format(app.url), yellow, print)
 
-    rm_pid_name(app.name)
+    # 删除服务进程
+    rm_pid_name()
+
     sys.exit(0)
 
 
@@ -65,7 +67,15 @@ async def service_check():
 
 
 async def init_app():
+    # 初始化服务进程
+    init_pid_name()
+
     app = Application.current()
+
+    from sanic_cors import CORS
+
+    # 跨域处理
+    CORS(app, automatic_options=True)
 
     from kervice.app.config import init_config
     init_config()
@@ -93,3 +103,7 @@ async def init_app():
     signal(SIGTERM, _func)
     signal(SIGINT, _func)
     signal(SIGQUIT, _func)
+
+    @app.middleware('response')
+    async def custom_banner(request, response):
+        response.headers["content-type"] = "application/json"

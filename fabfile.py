@@ -35,6 +35,10 @@ def local_init():
     local("pip install pipreqs")
     local("pip install ujson")
     local("pip install click")
+    local("pip install sanic")
+    local("pip install Sanic-Cors")
+    local("pip install AoikLiveReload")
+
 
 
 def run_app(env="local", port="8100"):
