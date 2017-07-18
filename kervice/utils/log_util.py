@@ -1,19 +1,11 @@
-# -*- coding: utf-8 -*-
-
-
-# -*- coding:utf-8 -*-
-
-'''
-This library is provided to allow standard python logging
-to output log data as JSON formatted strings
-'''
 import logging
 import sys
 import time
+from asyncio import iscoroutine, coroutine, get_event_loop, run_coroutine_threadsafe
 
-from scores.const import base_log_key_words
-from utils import colors
-from utils.net_tool import get_host_ip
+from kervice.app.const import base_log_key_words
+from kervice.utils import colors
+from kervice.utils.net_tool import get_host_ip
 
 
 class JsonHandler(logging.Handler):
@@ -28,15 +20,17 @@ class JsonHandler(logging.Handler):
         _r = record.__dict__
         for key in self.key_words:
             _d = _r.get(key)
-            if _d:
-                _a[key] = _d
+            if not _d:
+                continue
+
+            _a[key] = _d
 
         _a["host_ip"] = self.host_ip
+        _a["asctime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(record.created))
 
-        timeArray = time.localtime(record.created)
-        otherStyleTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
-        _a["asctime"] = otherStyleTime
-        self.emit_callback(_a)
+        _f = self.emit_callback(_a) if iscoroutine(self.emit_callback) else coroutine(
+            self.emit_callback(_a))
+        run_coroutine_threadsafe(_f, get_event_loop())
 
 
 class KLog(object):
@@ -46,14 +40,18 @@ class KLog(object):
         self.log_format = ' '.join((lambda x: ['%({0:s})'.format(i) for i in x])(self.key_words))
 
     def init_log(self):
-        logger = logging.getLogger()
-        logger.addHandler(JsonHandler(
-            emit_callback=self.__callback,
-            key_words=self.key_words))
-        logger.setLevel(logging.INFO)
+        logging.basicConfig(
+            format=self.log_format,
+            level=logging.INFO,
+            handlers=[JsonHandler(
+                emit_callback=self.__callback,
+                key_words=self.key_words
+            )]
+        )
 
     def set_callback(self, callback):
         self.callback = callback
+        self.init_log()
         return self
 
     def __callback(self, record):
@@ -91,48 +89,3 @@ if __name__ == '__main__':
     logger.info("classic mebhhhhhhhhhhhhhhhh到底hhhssage")
     logger.info({"special": "value", "run": 12, "是谁": "的肚饿护额"})
     logger.error({"special": "value", "run": 12, "是谁": "的肚饿护额"})
-
-
-
-import logging
-import sys
-import ujson as json
-
-from utils import colors
-from utils.app import Application
-
-log = logging.getLogger(__name__)
-
-
-def log_callback(record):
-    _msg = record['msg']
-    _c = colors.red if record.get("levelname") == "ERROR" else colors.blue
-    if isinstance(_msg, dict):
-        __name = "wacai.log.error" if record.get("levelname") == "ERROR" else "wacai.log.info"
-        _r = Application.current().redis
-        _c = _r.conn()
-        if not _c:
-            log.error("redis连接失败")
-            log.error(_r.error_msg)
-            _r.dis_conn()
-
-            sys.stdout.write(
-                colors.yellow(
-                    "[{name}] [{asctime} {host_ip}] {filename}[{module}.{funcName}][{lineno}]\n".format(
-                        **record
-                    )
-                )
-            )
-            sys.stdout.write(_c("{levelname}: {msg}\n".format(**record)))
-            
-        else:
-            _c.rpush(__name, json.dumps(record))
-    else:
-        sys.stdout.write(
-            colors.yellow(
-                "[{name}] [{asctime} {host_ip}] {filename}[{module}.{funcName}][{lineno}]\n".format(
-                    **record
-                )
-            )
-        )
-        sys.stdout.write(_c("{levelname}: {msg}\n".format(**record)))

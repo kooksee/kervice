@@ -86,6 +86,9 @@ async def init_app():
     from kervice.app.urls import init_url
     init_url()
 
+    from kervice.utils.log_util import KLog
+    KLog().init_log()
+
     # 把服务添加到redis
     app.url = "{}:{}".format(get_host_ip(), app.port)
     st, _ = await app.redis.execute("sadd", "{}.urls".format(app.name), app.url)
