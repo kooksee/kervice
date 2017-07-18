@@ -65,6 +65,9 @@ def init_pid_name(name):
 
 def rm_pid_name(name):
     _path = os.path.join(os.getenv("HOME"), ".services/{}".format(name))
-    _pid_path=os.path.join(_path, "{}.pid".format(str(os.getpid())))
-    print(_pid_path)
+    _pid_path = os.path.join(_path, "{}.pid".format(str(os.getpid())))
     os.remove(_pid_path)
+    if not os.path.exists(_pid_path):
+        print(yellow("删除进程文件成功", _pid_path))
+    else:
+        print(red("删除进程文件失败", _pid_path))
