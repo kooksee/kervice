@@ -50,6 +50,10 @@ def run_app(env="local", port="8100"):
     运行本地项目
     fab run_app:"log='debug',env='dev',port=8100"
     fab run_app:log='debug',env='dev',port=8100
+
+    :param env:
+    :param port:
+    :return:
     """
 
     cmd("ps -ef | grep -v grep | grep kervice")

@@ -101,6 +101,9 @@ async def init_app():
     asyncio.run_coroutine_threadsafe(service_check(), asyncio.get_event_loop())
     asyncio.run_coroutine_threadsafe(service_handler(), asyncio.get_event_loop())
 
+    # asyncio.run_coroutine_threadsafe(service_check(), app._loop)
+    # asyncio.run_coroutine_threadsafe(service_handler(), app._loop)
+
     # 处理服务退出后的问题
     from signal import signal, SIGTERM, SIGINT, SIGQUIT
     _func = lambda sig, stack_frame: asyncio.ensure_future(close_service(sig, stack_frame))

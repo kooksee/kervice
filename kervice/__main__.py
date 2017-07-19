@@ -9,6 +9,18 @@ import click
 click.disable_unicode_literals_warning = True
 
 
+async def __main():
+    from kervice.utils.app import Application
+    from kervice.utils import red
+    from kervice.utils import pp
+    app = Application.current()
+
+    from kervice.app.main import init_app
+    await init_app()
+    await pp("info:\n  url: http://localhost:{}".format(app.port), red, print)
+    await app.create_server(host="0.0.0.0", port=app.port, debug=app.debug)
+
+
 @click.command()
 @click.option('--env', '-e', default='local', help=u'开发环境设置', show_default=True)
 @click.option('--port', '-p', default=80, help=u'端口', show_default=True)
@@ -43,12 +55,8 @@ def main(env, port, name):
         reloader = LiveReloader()
         reloader.start_watcher_thread()
 
-    ensure_future(pp("info:\n  url: http://localhost:{}".format(app.port), red, print))
-
-    from kervice.app.main import init_app
-    ensure_future(init_app())
-    ensure_future(app.create_server(host="0.0.0.0", port=app.port, debug=app.debug))
-    get_event_loop().run_forever()
+    asyncio.ensure_future(__main())
+    asyncio.get_event_loop().run_forever()
 
 
 if __name__ == "__main__":
