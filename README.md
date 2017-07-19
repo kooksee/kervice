@@ -20,4 +20,6 @@ click Python命令行神器
 sanic web框架
 Sanic-Cors k跨域处理
 AoikLiveReload 热加载
+python-socketio Python Socket.IO server
+pyresttest Python Rest Testing
 ```
