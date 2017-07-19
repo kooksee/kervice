@@ -49,6 +49,22 @@ def run_app(env="local", port="8100"):
     local(_cmd)
 
 
+def run_test(app_addr="http://localhost:8080", name=None):
+    """
+    fab run_test:"app_addr='http://localhost:8080',name='test'"
+    :param app_addr:
+    :param name:
+    :return:
+    """
+    import os
+    for i in os.listdir("t"):
+        if not name:
+            cmd("pyresttest {} t/{}.yaml".format(app_addr, i))
+        else:
+            cmd("pyresttest {} t/{}.yaml".format(app_addr, name))
+            break
+
+
 def _clone(p_name='kervice'):
     run("rm -rf /home/centos/projects/{}".format(p_name))
     with cd("/home/centos/projects"):
