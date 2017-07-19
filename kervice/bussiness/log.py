@@ -38,7 +38,7 @@ async def log_callback(record):
         _r = app.redis
         __name = "{}.log.error" if record.get("levelname") == "ERROR" else "{}.log.info"
         st, d = await _r.execute(
-            'rpush', __name.format(app.name), json.dumps(record)
+            'hset', __name.format(app.name),record.get("asctime"), json.dumps(record)
         )
         if not st:
             sys.stdout.write(colors.red("error: {}".format(d)))

@@ -37,6 +37,14 @@ def local_init():
     local("pip install AoikLiveReload")
 
 
+def gen_reqs():
+    """
+    生成requirements
+    :return:
+    """
+    cmd("pipreqs -f .")
+
+
 def run_app(env="local", port="8100"):
     """
     运行本地项目
