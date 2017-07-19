@@ -44,9 +44,10 @@ def main(env, port, name):
         reloader.start_watcher_thread()
 
     ensure_future(pp("info:\n  url: http://localhost:{}".format(app.port), red, print))
-    ensure_future(app.create_server(host="0.0.0.0", port=app.port, debug=app.debug))
+
     from kervice.app.main import init_app
     ensure_future(init_app())
+    ensure_future(app.create_server(host="0.0.0.0", port=app.port, debug=app.debug))
     get_event_loop().run_forever()
 
 
