@@ -4,6 +4,9 @@
 """
 import os
 
+import toml
+
+from manage.config import Config
 from manage.const import ENV
 
 try:
@@ -21,6 +24,8 @@ class Manager(object):
 
     def __init__(self, e=1):
         self._e = e
+        self.cfg = Config()
+        self._cfg_file = "./kervice/conf/cfg.toml"
 
     def deps(self, he=3):
         """
@@ -62,7 +67,8 @@ class Manager(object):
         生成各个环境的配置文件
         :return:
         """
-        pass
+
+        open(self._cfg_file, "w").write(toml.dumps(self.cfg.dev()))
 
 
 if __name__ == '__main__':

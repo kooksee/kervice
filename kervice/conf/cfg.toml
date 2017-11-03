@@ -1,0 +1,5 @@
+[log]
+format = "PID %(process)d %(asctime)s %(levelname)-5s %(threadName)-10s [%(lineno)d]%(name)-15s %(message)s"
+datefmt = "%Y-%m-%d %H:%M:%S"
+filename = ""
+level = 10
