@@ -29,7 +29,6 @@ class JsonHandler(logging.Handler):
         _a["asctime"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(record.created))
 
         _f = self.emit_callback(_a) if iscoroutine(self.emit_callback) else coroutine(self.emit_callback)(_a)
-
         run_coroutine_threadsafe(_f, get_event_loop())
 
 
